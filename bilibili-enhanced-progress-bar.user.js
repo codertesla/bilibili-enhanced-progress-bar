@@ -3,7 +3,7 @@
 // @name:zh-CN   Bilibili 增强进度条 - 暂停显示/永久显示/缓冲进度
 // @name:en      Bilibili Enhanced Progress Bar
 // @namespace    https://github.com/codertesla/bilibili-enhanced-progress-bar
-// @version      0.2.2
+// @version      0.2.3
 // @description  B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
 // @description:zh-CN B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
 // @description:en Show a subtle Bilibili-style progress bar when paused, with optional always-on display, buffered progress, fullscreen support.
@@ -29,7 +29,6 @@
 
   const CONFIG = {
     alwaysShowKey: "biliBarAlwaysShow",
-    preferNativeKey: "biliBarPreferNative",
     refreshMs: 1000,
   };
 
@@ -47,17 +46,10 @@
       ".bpx-player-primary-area",
       ".player-wrap",
     ].join(","),
-    nativeProgress: [
-      ".bpx-player-progress-wrap",
-      ".bpx-player-progress",
-      ".bilibili-player-video-progress",
-      ".squirtle-progress-wrap",
-    ].join(","),
   };
 
   const state = {
     alwaysShow: Boolean(GM_getValue(CONFIG.alwaysShowKey, false)),
-    preferNative: Boolean(GM_getValue(CONFIG.preferNativeKey, false)),
     video: null,
     player: null,
     customBar: null,
@@ -67,23 +59,6 @@
 
   const style = document.createElement("style");
   style.textContent = `
-    .bbp-native-visible .bpx-player-progress-wrap,
-    .bbp-native-visible .bpx-player-progress,
-    .bbp-native-visible .bilibili-player-video-progress,
-    .bbp-native-visible .squirtle-progress-wrap {
-      opacity: 1 !important;
-      visibility: visible !important;
-      transform: translateY(0) !important;
-      pointer-events: auto !important;
-    }
-
-    .bbp-native-visible .bpx-player-control-wrap,
-    .bbp-native-visible .bpx-player-control-bottom,
-    .bbp-native-visible .bilibili-player-video-control-wrap {
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
-
     .bbp-custom-host {
       position: relative !important;
     }
@@ -153,12 +128,6 @@
       updateVisibility();
       location.reload();
     });
-
-    GM_registerMenuCommand(menuText("优先尝试原生进度条", state.preferNative), () => {
-      state.preferNative = !state.preferNative;
-      GM_setValue(CONFIG.preferNativeKey, state.preferNative);
-      location.reload();
-    });
   }
 
   function menuText(label, enabled) {
@@ -216,10 +185,6 @@
     state.video.removeEventListener("timeupdate", scheduleProgress, true);
     state.video.removeEventListener("durationchange", updateProgress, true);
 
-    if (state.player) {
-      state.player.classList.remove("bbp-native-visible");
-    }
-
     if (state.customBar) {
       state.customBar.remove();
       state.customBar = null;
@@ -243,23 +208,14 @@
 
   function updateVisibility() {
     const visible = shouldShow();
-    const nativeVisible = visible && state.preferNative && hasNativeProgress();
-
-    if (state.player) {
-      state.player.classList.toggle("bbp-native-visible", nativeVisible);
-    }
 
     ensureCustomBar();
     if (state.customBar) {
-      state.customBar.classList.toggle("is-visible", visible && !nativeVisible);
+      state.customBar.classList.toggle("is-visible", visible);
       state.customBar.classList.toggle("is-fullscreen", isFullscreenLike());
     }
 
     scheduleProgress();
-  }
-
-  function hasNativeProgress() {
-    return Boolean(state.player && state.player.querySelector(SELECTORS.nativeProgress));
   }
 
   function fullscreenElement() {
