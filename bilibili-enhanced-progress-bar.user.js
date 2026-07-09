@@ -3,7 +3,7 @@
 // @name:zh-CN   Bilibili 增强进度条
 // @name:en      Bilibili 增强进度条
 // @namespace    https://github.com/codertesla/bilibili-enhanced-progress-bar
-// @version      0.2.5
+// @version      0.2.6
 // @description  B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
 // @description:zh-CN B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
 // @description:en Show a subtle Bilibili-style progress bar when paused, with optional always-on display, buffered progress, fullscreen support.
@@ -80,7 +80,7 @@
     }
 
     .bbp-custom-bar.is-visible {
-      opacity: 0.8;
+      opacity: 0.88;
     }
 
     .bbp-custom-buffered,
@@ -98,8 +98,8 @@
     }
 
     .bbp-custom-played {
-      background: #6e9eb3;
-      box-shadow: 0 0 4px rgba(110, 158, 179, 0.18);
+      background: #37a6cf;
+      box-shadow: 0 0 5px rgba(55, 166, 207, 0.24);
     }
 
     .bbp-custom-bar::after {
