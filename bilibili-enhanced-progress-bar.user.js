@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         Bilibili 增强进度条 - 暂停显示/永久显示/缓冲进度
-// @name:zh-CN   Bilibili 增强进度条 - 暂停显示/永久显示/缓冲进度
-// @name:en      Bilibili 增强进度条 - 暂停显示/永久显示/缓冲进度
+// @name         Bilibili 增强进度条
+// @name:zh-CN   Bilibili 增强进度条
+// @name:en      Bilibili 增强进度条
 // @namespace    https://github.com/codertesla/bilibili-enhanced-progress-bar
-// @version      0.2.4
+// @version      0.2.5
 // @description  B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
 // @description:zh-CN B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
 // @description:en Show a subtle Bilibili-style progress bar when paused, with optional always-on display, buffered progress, fullscreen support.
@@ -20,6 +20,7 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_registerMenuCommand
+// @grant        GM_unregisterMenuCommand
 // @run-at       document-idle
 // @license      MIT
 // ==/UserScript==
@@ -55,6 +56,7 @@
     customBar: null,
     customHost: null,
     raf: 0,
+    menuCmdId: null,
   };
 
   const style = document.createElement("style");
@@ -122,16 +124,14 @@
   bindCurrentVideo();
 
   function registerMenus() {
-    GM_registerMenuCommand(menuText("永久显示进度条", state.alwaysShow), () => {
+    if (state.menuCmdId) GM_unregisterMenuCommand(state.menuCmdId);
+    const label = state.alwaysShow ? "✓ 永久显示进度条" : "○ 仅暂停时显示进度条";
+    state.menuCmdId = GM_registerMenuCommand(label, () => {
       state.alwaysShow = !state.alwaysShow;
       GM_setValue(CONFIG.alwaysShowKey, state.alwaysShow);
       updateVisibility();
-      location.reload();
+      registerMenus();
     });
-  }
-
-  function menuText(label, enabled) {
-    return `${enabled ? "✓" : "○"} ${label}`;
   }
 
   function observePage() {
