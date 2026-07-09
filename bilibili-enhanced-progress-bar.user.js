@@ -3,11 +3,12 @@
 // @name:zh-CN   Bilibili 增强进度条
 // @name:en      Bilibili 增强进度条
 // @namespace    https://github.com/codertesla/bilibili-enhanced-progress-bar
-// @version      0.2.6
+// @version      0.2.7
 // @description  B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
 // @description:zh-CN B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
 // @description:en Show a subtle Bilibili-style progress bar when paused, with optional always-on display, buffered progress, fullscreen support.
 // @author       codertesla
+// @icon         https://static.hdslb.com/images/favicon.ico
 // @homepageURL  https://github.com/codertesla/bilibili-enhanced-progress-bar
 // @supportURL   https://github.com/codertesla/bilibili-enhanced-progress-bar/issues
 // @match        https://www.bilibili.com/video/*
