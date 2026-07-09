@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Bilibili 增强进度条 - 暂停显示/永久显示/缓冲进度
 // @name:zh-CN   Bilibili 增强进度条 - 暂停显示/永久显示/缓冲进度
-// @name:en      Bilibili Enhanced Progress Bar
+// @name:en      Bilibili 增强进度条 - 暂停显示/永久显示/缓冲进度
 // @namespace    https://github.com/codertesla/bilibili-enhanced-progress-bar
-// @version      0.2.3
+// @version      0.2.4
 // @description  B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
 // @description:zh-CN B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
 // @description:en Show a subtle Bilibili-style progress bar when paused, with optional always-on display, buffered progress, fullscreen support.
@@ -64,7 +64,7 @@
     }
 
     .bbp-custom-bar {
-      --bbp-height: 3px;
+      --bbp-height: 2px;
       position: absolute;
       left: 0;
       right: 0;
@@ -73,12 +73,12 @@
       height: var(--bbp-height);
       opacity: 0;
       pointer-events: none;
-      background: rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.15);
       transition: opacity 150ms ease;
     }
 
     .bbp-custom-bar.is-visible {
-      opacity: 0.95;
+      opacity: 0.8;
     }
 
     .bbp-custom-buffered,
@@ -92,12 +92,12 @@
     }
 
     .bbp-custom-buffered {
-      background: rgba(255, 255, 255, 0.34);
+      background: rgba(255, 255, 255, 0.24);
     }
 
     .bbp-custom-played {
-      background: #00aeec;
-      box-shadow: 0 0 7px rgba(0, 174, 236, 0.32);
+      background: #6e9eb3;
+      box-shadow: 0 0 4px rgba(110, 158, 179, 0.18);
     }
 
     .bbp-custom-bar::after {
