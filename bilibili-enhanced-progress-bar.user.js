@@ -3,10 +3,10 @@
 // @name:zh-CN   Bilibili 增强进度条
 // @name:en      Bilibili 增强进度条
 // @namespace    https://github.com/codertesla/bilibili-enhanced-progress-bar
-// @version      0.2.7
-// @description  B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
-// @description:zh-CN B 站视频暂停时显示进度条，可选永久显示；默认渲染官方蓝自绘进度条，支持缓冲进度、全屏和网页全屏。
-// @description:en Show a subtle Bilibili-style progress bar when paused, with optional always-on display, buffered progress, fullscreen support.
+// @version      0.2.8
+// @description  仅在全屏/网页全屏时显示自绘进度条（暂停或可选永久显示）；非全屏交给 B 站原生进度条，支持缓冲进度。
+// @description:zh-CN 仅在全屏/网页全屏时显示自绘进度条（暂停或可选永久显示）；非全屏交给 B 站原生进度条，支持缓冲进度。
+// @description:en Show a custom progress bar only in fullscreen / web-fullscreen (paused or always-on); leave the native bar alone otherwise.
 // @author       codertesla
 // @icon         https://static.hdslb.com/images/favicon.ico
 // @homepageURL  https://github.com/codertesla/bilibili-enhanced-progress-bar
@@ -142,17 +142,15 @@
       subtree: true,
     });
 
-    document.addEventListener("fullscreenchange", () => {
-      moveCustomBarToBestHost();
-      updateVisibility();
-      updateProgress();
-    }, true);
+    document.addEventListener("fullscreenchange", onFullscreenChange, true);
+    document.addEventListener("webkitfullscreenchange", onFullscreenChange, true);
+    window.addEventListener("resize", onFullscreenChange);
+  }
 
-    document.addEventListener("webkitfullscreenchange", () => {
-      moveCustomBarToBestHost();
-      updateVisibility();
-      updateProgress();
-    }, true);
+  function onFullscreenChange() {
+    moveCustomBarToBestHost();
+    updateVisibility();
+    updateProgress();
   }
 
   function bindCurrentVideo() {
@@ -204,6 +202,8 @@
 
   function shouldShow() {
     if (!state.video) return false;
+    // 非全屏时用 B 站原生进度条，避免叠两条
+    if (!isFullscreenLike()) return false;
     return state.alwaysShow || state.video.paused || state.video.ended;
   }
 
@@ -226,6 +226,16 @@
   function isFullscreenLike() {
     if (fullscreenElement()) return true;
     if (!state.player) return false;
+
+    // B 站「网页全屏」常见 class / 状态
+    if (
+      state.player.classList.contains("bpx-state-web-fullscreen") ||
+      state.player.classList.contains("mode-webscreen") ||
+      document.body.classList.contains("player-mode-webscreen") ||
+      document.documentElement.classList.contains("player-fullscreen-fix")
+    ) {
+      return true;
+    }
 
     const rect = state.player.getBoundingClientRect();
     return rect.width >= window.innerWidth * 0.94 && rect.height >= window.innerHeight * 0.82;
